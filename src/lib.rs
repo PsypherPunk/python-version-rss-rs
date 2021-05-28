@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use rss::{Channel, ChannelBuilder, Item};
+use rss::{Channel, ChannelBuilder, Guid, Item};
 use serde::Deserialize;
 use ureq::Response;
 
@@ -42,6 +42,13 @@ fn get_rfc822_date(date: &str) -> String {
         .to_rfc2822()
 }
 
+fn get_guid(slug: &str) -> Guid {
+    Guid {
+        value: slug.to_string(),
+        permalink: false,
+    }
+}
+
 pub fn get_rss_items(releases: Vec<Release>) -> Vec<Item> {
     releases
         .iter()
@@ -53,7 +60,7 @@ pub fn get_rss_items(releases: Vec<Release>) -> Vec<Item> {
             categories: Vec::new(),
             comments: None,
             enclosure: None,
-            guid: None,
+            guid: Some(get_guid(&release.slug)),
             pub_date: Some(get_rfc822_date(&release.release_date)),
             source: None,
             content: None,

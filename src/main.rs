@@ -15,6 +15,6 @@ fn main() {
         .open("release.rss")
         .expect("output file creation failed");
 
-    file.write(channel.to_string().as_bytes())
+    file.write_all(channel.to_string().as_bytes())
         .expect("writing RSS failed");
 }
