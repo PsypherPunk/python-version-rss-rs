@@ -1,0 +1,11 @@
+[package]
+name = "python_version_rss"
+version = "0.1.0"
+authors = ["PsypherPunk <psypherpunk@gmail.com>"]
+edition = "2018"
+license-file = "LICENSE"
+
+[dependencies]
+rss = { version = "^1.0", features = ["builders"] }
+serde = { version = "^1.0", features = ["derive"] }
+ureq = { version = "^2.1", features = ["json"] }

@@ -1,0 +1,31 @@
+name: cron
+
+on: 
+  push:
+    branches:
+      - main
+  schedule:
+    - cron: "0 8 * * *"
+
+jobs:
+  update:
+    name: update-feed
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout
+      uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
+
+    - name: run
+      uses: actions-rs/cargo@v1
+      with:
+        command: run
+        args: --release > release.rss
+
+    - name: commit
+      run: git diff --exit-code || ./bin/commit
