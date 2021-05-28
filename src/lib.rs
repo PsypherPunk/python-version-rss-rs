@@ -73,7 +73,7 @@ pub fn get_rss_items(releases: Vec<Release>) -> Vec<Item> {
 
 #[cfg(test)]
 mod tests {
-    use crate::{get_json_feed, get_releases_from_response};
+    use super::*;
 
     #[test]
     fn test_get_feed() {
@@ -89,5 +89,13 @@ mod tests {
         let releases = get_releases_from_response(response);
 
         assert!(releases.is_ok());
+    }
+
+    #[test]
+    fn test_get_rfc822() {
+        assert_eq!(
+            "Fri, 02 Apr 2021 17:32:13 +0000",
+            get_rfc822_date("2021-04-02T17:32:13Z"),
+        );
     }
 }

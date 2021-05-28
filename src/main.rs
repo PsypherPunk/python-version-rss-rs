@@ -11,7 +11,7 @@ fn main() {
     channel.items = items;
 
     let mut file = std::fs::OpenOptions::new()
-        .append(true)
+        .write(true)
         .open("release.rss")
         .expect("output file creation failed");
 
