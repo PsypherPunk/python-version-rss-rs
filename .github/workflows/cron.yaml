@@ -25,7 +25,7 @@ jobs:
       uses: actions-rs/cargo@v1
       with:
         command: run
-        args: --release > release.rss
+        args: --release
 
     - name: commit
       run: git diff --exit-code || ./bin/commit

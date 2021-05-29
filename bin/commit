@@ -1,0 +1,15 @@
+#! /bin/bash
+
+set -o errexit
+set -o nounset
+
+git config user.name "${GIT_COMMIT_USERNAME}"
+git config user.email "${GIT_COMMIT_EMAIL}"
+
+git add ./release.rss && git commit -m "Update RSS Feed $(date --utc --iso-8601=seconds)
+
+Update RSS feed from official releases
+[feed](https://www.python.org/api/v2/downloads/release/).
+
++semver: patch" && git push origin main
+
