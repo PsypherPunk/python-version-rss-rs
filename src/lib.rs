@@ -42,6 +42,19 @@ fn get_rfc822_date(date: &str) -> String {
         .to_rfc2822()
 }
 
+pub fn get_sorted_releases(releases: &mut Vec<Release>) {
+    releases.sort_by(|a, b| {
+        b.release_date
+            .parse::<DateTime<Utc>>()
+            .expect("invalid date")
+            .cmp(
+                &a.release_date
+                    .parse::<DateTime<Utc>>()
+                    .expect("invalid date"),
+            )
+    });
+}
+
 fn get_guid(slug: &str) -> Guid {
     Guid {
         value: slug.to_string(),

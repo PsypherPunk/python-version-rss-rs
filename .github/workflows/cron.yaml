@@ -11,6 +11,7 @@ jobs:
   update:
     name: update-feed
     runs-on: ubuntu-latest
+    environment: main
 
     steps:
     - name: checkout
@@ -28,4 +29,7 @@ jobs:
         args: --release
 
     - name: commit
+      env:
+        GIT_COMMIT_USERNAME: ${{ secrets.GIT_COMMIT_USERNAME }}
+        GIT_COMMIT_EMAIL: ${{ secrets.GIT_COMMIT_EMAIL }}
       run: git diff --exit-code || ./bin/commit
