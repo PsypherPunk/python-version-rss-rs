@@ -28,11 +28,12 @@ pub fn get_releases_from_response(response: Response) -> Result<Vec<Release>, st
     response.into_json()
 }
 
-pub fn get_channel() -> Result<Channel, String> {
+pub fn get_channel(items: Vec<Item>) -> Channel {
     ChannelBuilder::default()
         .title("Python Releases")
         .link(PYTHON_RELEASE_URL)
         .description("Feed of all Python releases.")
+        .items(items)
         .build()
 }
 
@@ -65,21 +66,28 @@ fn get_guid(slug: &str) -> Guid {
 pub fn get_rss_items(releases: Vec<Release>) -> Vec<Item> {
     releases
         .iter()
-        .map(|release| Item {
-            title: Some(release.name.to_owned()),
-            link: Some(release.resource_uri.to_owned()),
-            description: Some(release.release_notes_url.to_owned()),
-            author: None,
-            categories: Vec::new(),
-            comments: None,
-            enclosure: None,
-            guid: Some(get_guid(&release.slug)),
-            pub_date: Some(get_rfc822_date(&release.release_date)),
-            source: None,
-            content: None,
-            extensions: Default::default(),
-            itunes_ext: None,
-            dublin_core_ext: None,
+        .map(|release| {
+            let link = match release.release_notes_url.len() {
+                0 => release.resource_uri.to_owned(),
+                _ => release.release_notes_url.to_owned(),
+            };
+
+            Item {
+                title: Some(release.name.to_owned()),
+                link: Some(link),
+                description: None,
+                author: None,
+                categories: Vec::new(),
+                comments: None,
+                enclosure: None,
+                guid: Some(get_guid(&release.slug)),
+                pub_date: Some(get_rfc822_date(&release.release_date)),
+                source: None,
+                content: None,
+                extensions: Default::default(),
+                itunes_ext: None,
+                dublin_core_ext: None,
+            }
         })
         .collect()
 }

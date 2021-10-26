@@ -7,9 +7,8 @@ fn main() {
     let mut releases = get_releases_from_response(response).expect("parsing releases failed");
     get_sorted_releases(&mut releases);
 
-    let mut channel = get_channel().expect("building RSS channel failed");
     let items = get_rss_items(releases);
-    channel.items = items;
+    let channel = get_channel(items);
 
     let mut file = std::fs::OpenOptions::new()
         .write(true)
