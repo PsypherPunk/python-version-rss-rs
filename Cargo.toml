@@ -9,4 +9,4 @@ license-file = "LICENSE"
 chrono = "^0.4"
 rss = { version = "^2", features = ["builders"] }
 serde = { version = "^1", features = ["derive"] }
-ureq = { version = "^2", features = ["json"] }
+ureq = { version = "^3", features = ["json"] }
