@@ -1,10 +1,12 @@
 use chrono::{DateTime, Utc};
 use rss::{Channel, ChannelBuilder, Guid, Item};
 use serde::Deserialize;
-use ureq::Response;
+use ureq::http::Response;
+use ureq::{Body, Error as UreqError};
 
 const PYTHON_RELEASE_URL: &str = "https://www.python.org/api/v2/downloads/release/";
 
+#[allow(dead_code)]
 #[derive(Debug, Deserialize)]
 pub struct Release {
     name: String,
@@ -20,12 +22,12 @@ pub struct Release {
     resource_uri: String,
 }
 
-pub fn get_json_feed() -> Result<Response, ureq::Error> {
+pub fn get_json_feed() -> Result<Response<Body>, ureq::Error> {
     ureq::get(PYTHON_RELEASE_URL).call()
 }
 
-pub fn get_releases_from_response(response: Response) -> Result<Vec<Release>, std::io::Error> {
-    response.into_json()
+pub fn get_releases_from_response(response: Response<Body>) -> Result<Vec<Release>, UreqError> {
+    response.into_body().read_json::<Vec<Release>>()
 }
 
 pub fn get_channel(items: Vec<Item>) -> Channel {
@@ -43,7 +45,7 @@ fn get_rfc822_date(date: &str) -> String {
         .to_rfc2822()
 }
 
-pub fn get_sorted_releases(releases: &mut Vec<Release>) {
+pub fn get_sorted_releases(releases: &mut [Release]) {
     releases.sort_by(|a, b| {
         b.release_date
             .parse::<DateTime<Utc>>()
@@ -101,7 +103,7 @@ mod tests {
         let feed = get_json_feed();
 
         assert!(feed.is_ok());
-        assert!(feed.unwrap().into_string().is_ok());
+        assert!(feed.unwrap().into_body().read_to_string().is_ok());
     }
 
     #[test]
@@ -115,7 +117,7 @@ mod tests {
     #[test]
     fn test_get_rfc822() {
         assert_eq!(
-            "Fri, 02 Apr 2021 17:32:13 +0000",
+            "Fri, 2 Apr 2021 17:32:13 +0000",
             get_rfc822_date("2021-04-02T17:32:13Z"),
         );
     }
